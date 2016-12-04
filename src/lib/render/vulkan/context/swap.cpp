@@ -70,7 +70,7 @@ namespace hugh {
           TRACE("hugh::render::vulkan::context::swap::~swap");
 
           if (nullptr != surface_) {
-            ::vkDeviceWaitIdle(static_cast<handle<::VkDevice>&>(ctx_));
+            ::vkDeviceWaitIdle(*static_cast<handle<::VkDevice>&>(ctx_));
           }
         }
         

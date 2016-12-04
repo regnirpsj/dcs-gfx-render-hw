@@ -76,6 +76,26 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(test_hugh_render_vulkan_handle_ctor, T, handle_typ
 
   handle<T> const h;
   
-  BOOST_CHECK       (nullptr == static_cast<T const>(h));
+  BOOST_CHECK       (!h && (nullptr == *h));
   BOOST_TEST_MESSAGE(h);
+}
+
+BOOST_AUTO_TEST_CASE_TEMPLATE(test_hugh_render_vulkan_handle_reset, T, handle_types)
+{
+  using namespace hugh::render::vulkan;
+
+  handle<T> h1;
+
+  BOOST_CHECK( h1 == *h1);
+  BOOST_CHECK(*h1 ==  h1);
+  
+  handle<T> const h2;
+
+  BOOST_CHECK( h2 == *h2);
+  BOOST_CHECK(*h2 ==  h2);
+  
+  h1.reset(*h2);
+  
+  BOOST_CHECK( h1 == *h2);
+  BOOST_CHECK(*h1 ==  h2);
 }

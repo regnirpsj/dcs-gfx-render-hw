@@ -48,40 +48,39 @@ namespace hugh {
 
       template <typename T>
       inline
-      handle<T>::handle(generic_deleter a)
+      handle<T>::handle(delete_generic a)
         : object_ (nullptr),
           deleter_([=](T o) { a(o, nullptr); })
       {
         TRACE("hugh::render::vulkan::handle<" + support::demangle(typeid(T)) +
-              ">::handle(generic_deleter)");
+              ">::handle(delete_generic)");
       }
 
       template <typename T>
       inline
-      handle<T>::handle(handle<::VkInstance> const& a, instance_deleter b)
+      handle<T>::handle(handle<::VkInstance> const& a, delete_instance b)
         : object_ (nullptr),
           deleter_([&a, b](T o) { b(a, o, nullptr); })
       {
         TRACE("hugh::render::vulkan::handle<" + support::demangle(typeid(T)) +
-              ">::handle(instance_deleter)");
+              ">::handle(delete_instance)");
       }
 
       template <typename T>
       inline
-      handle<T>::handle(handle<::VkDevice> const& a, device_deleter b)
+      handle<T>::handle(handle<::VkDevice> const& a, delete_device b)
         : object_ (nullptr),
           deleter_([&a, b](T o) { b(a, o, nullptr); })
       {
         TRACE("hugh::render::vulkan::handle<" + support::demangle(typeid(T)) +
-              ">::handle(device_deleter)");
+              ">::handle(delete_device)");
       }
 
       template <typename T>
       inline
       handle<T>::~handle()
       {
-        TRACE("hugh::render::vulkan::handle<" + support::demangle(typeid(T)) +
-              ">::~handle");
+        TRACE("hugh::render::vulkan::handle<" + support::demangle(typeid(T)) + ">::~handle");
         
         cleanup();
       }
@@ -100,22 +99,75 @@ namespace hugh {
       inline T*
       handle<T>::operator &()
       {
-        TRACE("hugh::render::vulkan::handle<" + support::demangle(typeid(T)) +
-              ">::operator &");
+        TRACE("hugh::render::vulkan::handle<" + support::demangle(typeid(T)) + ">::operator &");
 
         return &object_;
       }
 
       template <typename T>
-      inline
-      handle<T>::operator T() const
+      inline T const&
+      handle<T>::operator *() const
       {
         TRACE("hugh::render::vulkan::handle<" + support::demangle(typeid(T)) +
-              ">::operator " + support::demangle(typeid(T)));
+              ">::operator * const");
 
         return object_;
       }
 
+      template <typename T>
+      inline T&
+      handle<T>::operator *()
+      {
+        TRACE("hugh::render::vulkan::handle<" + support::demangle(typeid(T)) + ">::operator *");
+
+        return object_;
+      }
+
+      template <typename T>
+      inline
+      handle<T>::operator T const () const
+      {
+        TRACE("hugh::render::vulkan::handle<" + support::demangle(typeid(T)) +
+              ">::operator T const");
+
+        return object_;
+      }
+
+      template <typename T>
+      inline
+      handle<T>::operator T ()
+      {
+        TRACE("hugh::render::vulkan::handle<" + support::demangle(typeid(T)) + ">::operator T");
+
+        return object_;
+      }
+
+      template <typename T>
+      inline
+      handle<T>::operator bool () const
+      {
+        TRACE("hugh::render::vulkan::handle<" + support::demangle(typeid(T)) + ">::operator bool");
+
+        return (nullptr != object_);
+      }
+
+      template <typename T>
+      inline T
+      handle<T>::reset(T const& a)
+      {
+        TRACE("hugh::render::vulkan::handle<" + support::demangle(typeid(T)) + ">::reset");
+
+        T const result(object_);
+        
+        if (a != object_) {
+          cleanup();
+          
+          object_ = a;
+        }
+
+        return result;
+      }
+      
       template <typename T>
       inline void
       handle<T>::operator=(T const& rhs)
@@ -148,7 +200,7 @@ namespace hugh {
            << object_
            << ',';
 
-        // avoids catching 'object_' with an 'support::ostream::operator<<'
+        // avoid catching 'object_' with 'support::ostream::operator<<'
         using support::ostream::operator<<;
         
         os << deleter_

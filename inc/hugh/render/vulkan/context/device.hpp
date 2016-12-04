@@ -42,10 +42,7 @@ namespace hugh {
 
           explicit device();
           virtual ~device();
-
-          operator ::VkInstance ();
-          operator ::VkDevice   ();
-
+          
           operator handle<::VkInstance>& ();
           operator handle<::VkDevice>&   ();
           

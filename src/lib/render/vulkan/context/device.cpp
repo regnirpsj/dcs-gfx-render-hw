@@ -65,20 +65,20 @@ namespace hugh {
           TRACE("hugh::render::vulkan::context::device::device");
 
           { // instance
-            ::VkApplicationInfo const app_info = {
+            ::VkApplicationInfo const ai = {
               .sType         = VK_STRUCTURE_TYPE_APPLICATION_INFO,
               .pEngineName   = "hugh-render-vulkan",
               .engineVersion = VK_MAKE_VERSION(1, 0, 0),
               .apiVersion    = VK_API_VERSION_1_0,
             };
             
-            ::VkInstanceCreateInfo    inst_info = {
+            ::VkInstanceCreateInfo    ici = {
               .sType             = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
-              .pApplicationInfo  = &app_info,
+              .pApplicationInfo  = &ai,
               .enabledLayerCount = 0,
             };
             
-            if (VK_SUCCESS != ::vkCreateInstance(&inst_info, nullptr, &instance_)) {
+            if (VK_SUCCESS != ::vkCreateInstance(&ici, nullptr, &instance_)) {
               std::runtime_error("'vkCreateInstance' failed!");
             }
           }
@@ -86,7 +86,7 @@ namespace hugh {
           { // adapter
             unsigned count(0);
             
-            ::vkEnumeratePhysicalDevices(instance_, &count, nullptr);
+            ::vkEnumeratePhysicalDevices(*instance_, &count, nullptr);
 
             if (0 == count) {
               throw std::runtime_error("'vkEnumeratePhysicalDevices'"
@@ -95,7 +95,7 @@ namespace hugh {
 
             std::vector<::VkPhysicalDevice> adapter_list(count);
             
-            ::vkEnumeratePhysicalDevices(instance_, &count, adapter_list.data());
+            ::vkEnumeratePhysicalDevices(*instance_, &count, adapter_list.data());
 
             for (const auto& a : adapter_list) {
               if (adapter_suitable(a)) {
@@ -119,20 +119,6 @@ namespace hugh {
         device::~device()
         {
           TRACE("hugh::render::vulkan::context::device::~device");
-        }
-
-        device::operator ::VkInstance ()
-        {
-          TRACE("hugh::render::vulkan::context::device::operator ::VkInstance");
-
-          return static_cast<::VkInstance>(instance_);
-        }
-        
-        device::operator ::VkDevice ()
-        {
-          TRACE("hugh::render::vulkan::context::device::operator ::VkDevice");
-
-          return static_cast<::VkDevice>(device_);
         }
 
         device::operator handle<::VkInstance>& ()

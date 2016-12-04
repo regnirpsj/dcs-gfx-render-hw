@@ -34,28 +34,46 @@ namespace hugh {
       
       // types, exported (class, enum, struct, union, typedef)
       
-      // adapted from [https://vulkan-tutorial.com/]
-      
+      /*
+       * adapted from [https://vulkan-tutorial.com/]
+       */
       template <typename T>
       class handle : public support::printable {
         
       public:
 
-        using generic_deleter  = std::function<void(              T, ::VkAllocationCallbacks*)>;
-        using instance_deleter = std::function<void(::VkInstance, T, ::VkAllocationCallbacks*)>;
-        using device_deleter   = std::function<void(::VkDevice,   T, ::VkAllocationCallbacks*)>;
+        using delete_generic  = std::function<void(              T, ::VkAllocationCallbacks*)>;
+        using delete_instance = std::function<void(::VkInstance, T, ::VkAllocationCallbacks*)>;
+        using delete_device   = std::function<void(::VkDevice,   T, ::VkAllocationCallbacks*)>;
         
         handle();
-        handle(generic_deleter);
-        handle(handle<::VkInstance> const&, instance_deleter);
-        handle(handle<::VkDevice> const&,   device_deleter);
+        handle(                             delete_generic);
+        handle(handle<::VkInstance> const&, delete_instance);
+        handle(handle<::VkDevice> const&,   delete_device);
         ~handle();
 
+        /*
+         * returns a pointer to 'object'
+         */
         T const* operator &() const;
         T*       operator &();
 
-        operator T() const;
+        /*
+         * returns the 'object'
+         */
+        T const& operator *() const;
+        T&       operator *();
 
+        /*
+         * returns the 'object' (viable auto-conversion)
+         */
+        operator T const () const;
+        operator T       ();
+
+        operator bool () const;
+
+        T reset(T const&);
+        
         void operator=(T const&);
 
         template <typename U> bool operator==(U const&);
@@ -64,8 +82,8 @@ namespace hugh {
         
       private:
         
-        T                      object_;
-        std::function<void(T)> deleter_;
+        T                       object_;
+        std::function<void (T)> deleter_;
 
         void cleanup();
         
