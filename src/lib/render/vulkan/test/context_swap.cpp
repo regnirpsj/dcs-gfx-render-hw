@@ -14,7 +14,7 @@
 
 // includes, system
 
-//#include <>
+#include <memory> // std::unique_ptr<>
 
 // includes, project
 
@@ -43,12 +43,52 @@ BOOST_AUTO_TEST_CASE(test_hugh_render_vulkan_context_swap_ctor)
 {
   using namespace hugh::render::vulkan;
 
-  context::device d;
+  std::unique_ptr<context::device> dctx(new context::device);
 
-  BOOST_CHECK(glm::uvec2(0, 0) == d.size());
-
-  context::swap const s(d, glm::uvec2(1, 1));
+  BOOST_CHECK(nullptr != dctx);
   
-  BOOST_CHECK       (glm::uvec2(1, 1) == s.size());
-  BOOST_TEST_MESSAGE(s);
+  std::unique_ptr<context::swap> const sctx(new context::swap(*dctx, glm::uvec2(0, 0)));
+  
+  BOOST_CHECK(nullptr != sctx);
+}
+
+BOOST_AUTO_TEST_CASE(test_hugh_render_vulkan_context_swap_print_on)
+{
+  using namespace hugh::render::vulkan;
+
+  std::unique_ptr<context::device> dctx(new context::device);
+
+  BOOST_CHECK(nullptr != dctx);
+  
+  std::unique_ptr<context::swap> const sctx(new context::swap(*dctx, glm::uvec2(0, 0)));
+  
+  BOOST_CHECK(nullptr != sctx);
+
+  std::ostringstream ostr;
+
+  ostr << *sctx;
+
+  BOOST_CHECK       (!ostr.str().empty());
+  BOOST_TEST_MESSAGE( ostr.str());
+}
+
+BOOST_AUTO_TEST_CASE(test_hugh_render_vulkan_context_swap_size)
+{
+  using namespace hugh::render::vulkan;
+
+  std::unique_ptr<context::device> dctx(new context::device);
+
+  BOOST_CHECK(nullptr != dctx);
+
+  glm::uvec2 const                     s1  (1, 2);
+  std::unique_ptr<context::swap> const sctx(new context::swap(*dctx, s1));
+  
+  BOOST_CHECK(nullptr != sctx);
+  BOOST_CHECK(s1 == *sctx->size);
+
+  glm::uvec2 const s2 (3, 4);
+
+  sctx->size = s2;
+
+  BOOST_CHECK(s2 == *sctx->size);
 }

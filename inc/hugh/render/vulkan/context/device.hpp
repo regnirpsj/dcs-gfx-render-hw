@@ -22,6 +22,7 @@
 
 // includes, project
 
+#include <hugh/field/adapter/single.hpp>
 #include <hugh/render/context/device.hpp>
 #include <hugh/render/vulkan/export.h>
 #include <hugh/render/vulkan/handle.hpp>
@@ -40,20 +41,30 @@ namespace hugh {
 
         public:
 
+          using adapter_handle_type  = handle<::VkPhysicalDevice>;
+          using device_handle_type   = handle<::VkDevice>;
+          using instance_handle_type = handle<::VkInstance>;          
+
+          field::adapter::single<instance_handle_type> const instance; //< vulkan instance
+          field::adapter::single<adapter_handle_type>  const physical; //< adapter
+          field::adapter::single<device_handle_type>   const logical;  //< device
+          
           explicit device();
           virtual ~device();
           
-          operator handle<::VkInstance>& ();
-          operator handle<::VkDevice>&   ();
-          
-          virtual void print_on(std::ostream&) const;
-          
         private:
 
-          handle<::VkInstance>       instance_;
-          handle<::VkPhysicalDevice> adapter_;
-          handle<::VkDevice>         device_;
+          instance_handle_type instance_;
+          adapter_handle_type  physical_;
+          device_handle_type   logical_;
           
+          instance_handle_type const& cb_get_instance() const;
+          instance_handle_type        cb_set_instance(instance_handle_type const&);
+          device_handle_type const&   cb_get_logical  () const;
+          device_handle_type          cb_set_logical  (device_handle_type const&);
+          adapter_handle_type const&  cb_get_physical () const;
+          adapter_handle_type         cb_set_physical (adapter_handle_type const&);
+        
           bool adapter_suitable(VkPhysicalDevice);
           
         };

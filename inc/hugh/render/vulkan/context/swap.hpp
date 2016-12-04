@@ -39,16 +39,26 @@ namespace hugh {
 
         public:
 
-          explicit swap(device&, glm::uvec2 const&);
+          using device_context_type = context::device;
+          using surface_handle_type = handle<::VkSurfaceKHR>;
+
+          field::adapter::single<device_context_type> const device;  //< device context
+          field::adapter::single<surface_handle_type> const surface; //< surface
+
+          explicit swap(device_context_type& /* device context */,
+                        glm::uvec2 const&    /* size           */ = glm::uvec2(1,1));
           virtual ~swap();
-
-          virtual void print_on(std::ostream&) const;
           
-        private:
+        protected:
 
-          device&                ctx_;
-          handle<::VkSurfaceKHR> surface_;
-          
+          device_context_type& device_;
+          surface_handle_type  surface_;
+
+          device_context_type const& cb_get_device () const;
+          device_context_type        cb_set_device (device_context_type const&);
+          surface_handle_type const& cb_get_surface() const;
+          surface_handle_type        cb_set_surface(surface_handle_type const&);
+
         };
         
         // variables, exported (extern)

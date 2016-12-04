@@ -14,7 +14,7 @@
 
 // includes, system
 
-//#include <>
+#include <memory> // std::unique_ptr<>
 
 // includes, project
 
@@ -43,8 +43,23 @@ BOOST_AUTO_TEST_CASE(test_hugh_render_vulkan_context_device_ctor)
 {
   using namespace hugh::render::vulkan;
 
-  context::device const d;
+  std::unique_ptr<context::device> const ctx(new context::device);
   
-  BOOST_CHECK       (glm::uvec2(0, 0) == d.size());
-  BOOST_TEST_MESSAGE(d);
+  BOOST_CHECK(nullptr != ctx);
+}
+
+BOOST_AUTO_TEST_CASE(test_hugh_render_vulkan_context_device_print_on)
+{
+  using namespace hugh::render::vulkan;
+
+  std::unique_ptr<context::device> const ctx(new context::device);
+  
+  BOOST_CHECK(nullptr != ctx);
+
+  std::ostringstream ostr;
+
+  ostr << *ctx;
+
+  BOOST_CHECK       (!ostr.str().empty());
+  BOOST_TEST_MESSAGE( ostr.str());
 }

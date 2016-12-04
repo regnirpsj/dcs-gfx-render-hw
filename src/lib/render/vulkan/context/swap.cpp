@@ -18,16 +18,16 @@
 
 // includes, system
 
-#include <glm/gtx/io.hpp> // glm::io::*
-#include <ostream>        // std::ostream
-#include <stdexcept>      // std::runtime_error
+// #include <glm/gtx/io.hpp> // glm::io::*
+// #include <ostream>        // std::ostream
+#include <stdexcept>      // std::logic_error, std::runtime_error
 
 // includes, project
 
 #include <hugh/support/io_utils.hpp>
 
 #define HUGH_USE_TRACE
-//#undef HUGH_USE_TRACE
+#undef HUGH_USE_TRACE
 #include <hugh/support/trace.hpp>
 
 // internal unnamed namespace
@@ -55,11 +55,16 @@ namespace hugh {
         // functions, exported
 
         /* explicit */
-        swap::swap(device & a, glm::uvec2 const& b)
-          : render::context::base(b),
-            render::context::swap(b),
-            ctx_                 (a),
-            surface_             (static_cast<handle<::VkInstance>&>(ctx_), ::vkDestroySurfaceKHR)
+        swap::swap(context::device& a, glm::uvec2 const& b)
+          : render::context::swap(b),
+            device               (*this, "device",
+                                  std::bind(&swap::cb_get_device,  this),
+                                  std::bind(&swap::cb_set_device,  this, std::placeholders::_1)),
+            surface              (*this, "surface",
+                                  std::bind(&swap::cb_get_surface, this),
+                                  std::bind(&swap::cb_set_surface, this, std::placeholders::_1)),
+            device_              (a),
+            surface_             (*device_.instance, ::vkDestroySurfaceKHR)
         {
           TRACE("hugh::render::vulkan::context::swap::swap");
         }
@@ -70,27 +75,48 @@ namespace hugh {
           TRACE("hugh::render::vulkan::context::swap::~swap");
 
           if (nullptr != surface_) {
-            ::vkDeviceWaitIdle(*static_cast<handle<::VkDevice>&>(ctx_));
+            ::vkDeviceWaitIdle(**device_.logical);
           }
-        }
-        
-        /* virtual */ void
-        swap::print_on(std::ostream& os) const
+        }        
+
+        swap::device_context_type const&
+        swap::cb_get_device() const
         {
-          TRACE_NEVER("hugh::render::vulkan::context::swap::print_on");
-
-          os << glm::io::width(4);
+          TRACE("hugh::render::vulkan::context::swap::cb_get_logical");
           
-          render::context::swap::print_on(os);
-
-          using support::ostream::remove;
-          
-          os << remove(1) << ",\n"
-             << ctx_      << ",\n"
-             << surface_
-             << ']';
+          return device_;
         }
         
+        swap::device_context_type
+        swap::cb_set_device(device_context_type const&)
+        {
+          TRACE("hugh::render::vulkan::context::swap::cb_set_logical");
+
+          throw std::logic_error("invalid operation "
+                                 "'hugh::render::vulkan::context::swap::cb_set_logical'");
+
+          return device_context_type();
+        }
+        
+        swap::surface_handle_type const&
+        swap::cb_get_surface() const
+        {
+          TRACE("hugh::render::vulkan::context::swap::cb_get_logical");
+          
+          return surface_;
+        }
+        
+        swap::surface_handle_type
+        swap::cb_set_surface(surface_handle_type const&)
+        {
+          TRACE("hugh::render::vulkan::context::swap::cb_set_logical");
+
+          throw std::logic_error("invalid operation "
+                                 "'hugh::render::vulkan::context::swap::cb_set_logical'");
+          
+          return surface_handle_type();
+        }
+
       } // namespace context {
       
     } // namespace vulkan {

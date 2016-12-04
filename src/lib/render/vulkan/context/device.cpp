@@ -18,9 +18,9 @@
 
 // includes, system
 
-#include <glm/gtx/io.hpp> // glm::io::*
-#include <ostream>        // std::ostream
-#include <stdexcept>      // std::runtime_error
+// #include <glm/gtx/io.hpp> // glm::io::*
+// #include <ostream>        // std::ostream
+#include <stdexcept>      // std::logic_error, std::runtime_error
 
 // includes, project
 
@@ -56,11 +56,22 @@ namespace hugh {
 
         /* explicit */
         device::device()
-          : render::context::base  (glm::uvec2()),
-            render::context::device(glm::uvec2()),
-            instance_              (           ::vkDestroyInstance),
-            adapter_               (),
-            device_                (           ::vkDestroyDevice)
+          : render::context::device(),
+            instance               (*this, "instance",
+                                    std::bind(&device::cb_get_instance, this),
+                                    std::bind(&device::cb_set_instance, this,
+                                              std::placeholders::_1)),
+            physical               (*this, "phyiscal",
+                                    std::bind(&device::cb_get_physical, this),
+                                    std::bind(&device::cb_set_physical, this,
+                                              std::placeholders::_1)),
+            logical                (*this, "logical",
+                                    std::bind(&device::cb_get_logical,  this),
+                                    std::bind(&device::cb_set_logical,  this,
+                                              std::placeholders::_1)),
+            instance_              (::vkDestroyInstance),
+            physical_              (),
+            logical_               (::vkDestroyDevice)
         {
           TRACE("hugh::render::vulkan::context::device::device");
 
@@ -99,13 +110,13 @@ namespace hugh {
 
             for (const auto& a : adapter_list) {
               if (adapter_suitable(a)) {
-                adapter_ = a;
+                physical_ = a;
                 
                 break;
               }
             }
 
-            if (nullptr == adapter_) {
+            if (nullptr == physical_) {
               throw std::runtime_error("'vkEnumeratePhysicalDevices'"
                                        "failed to find a suitable GPU!");
             }
@@ -121,38 +132,63 @@ namespace hugh {
           TRACE("hugh::render::vulkan::context::device::~device");
         }
 
-        device::operator handle<::VkInstance>& ()
+        device::instance_handle_type const&
+        device::cb_get_instance() const
         {
-          TRACE("hugh::render::vulkan::context::device::operator handle<::VkInstance>&");
+          TRACE("hugh::render::vulkan::context::device::cb_get_instance");
 
           return instance_;
         }
-        
-        device::operator handle<::VkDevice>& ()
-        {
-          TRACE("hugh::render::vulkan::context::device::operator handle<::VkDevice>&");
 
-          return device_;
+        device::instance_handle_type
+        device::cb_set_instance(instance_handle_type const&)
+        {
+          TRACE("hugh::render::vulkan::context::device::cb_set_instance");
+
+          throw std::logic_error("invalid operation "
+                                 "'hugh::render::vulkan::context::device::cb_set_instance'");
+
+          return instance_handle_type();
         }
 
-        /* virtual */ void
-        device::print_on(std::ostream& os) const
+        device::device_handle_type const&
+        device::cb_get_logical() const
         {
-          TRACE_NEVER("hugh::render::vulkan::context::device::print_on");
+          TRACE("hugh::render::vulkan::context::device::cb_get_logical");
 
-          os << glm::io::width(4);
-          
-          render::context::device::print_on(os);
+          return logical_;
+        }
 
-          using support::ostream::remove;
-          
-          os << remove(1) << ",\n"
-             << instance_ << ",\n"
-             << adapter_  << ",\n"
-             << device_
-             << ']';
+        device::device_handle_type
+        device::cb_set_logical(device_handle_type const&)
+        {
+          TRACE("hugh::render::vulkan::context::device::cb_set_logical");
+
+          throw std::logic_error("invalid operation "
+                                 "'hugh::render::vulkan::context::device::cb_set_logical'");
+
+          return device_handle_type();
+        }
+
+        device::adapter_handle_type const&
+        device::cb_get_physical() const
+        {
+          TRACE("hugh::render::vulkan::context::device::cb_get_physical");
+
+          return physical_;
         }
         
+        device::adapter_handle_type
+        device::cb_set_physical(adapter_handle_type const&)
+        {
+          TRACE("hugh::render::vulkan::context::device::cb_set_physical");
+          
+          throw std::logic_error("invalid operation "
+                                 "'hugh::render::vulkan::context::device::cb_set_physical'");
+
+          return adapter_handle_type();
+        }
+
         bool
         device::adapter_suitable(::VkPhysicalDevice)
         {
