@@ -13,6 +13,7 @@ find_package(Boost ${BOOST_MINIMUM_VERSION} REQUIRED COMPONENTS unit_test_framew
 include_directories(SYSTEM ${Boost_INLCUDE_DIR})
 
 set(SRC)
+list(APPEND SRC compile.cpp)
 list(APPEND SRC context_device.cpp)
 list(APPEND SRC context_swap.cpp)
 list(APPEND SRC handle.cpp)
