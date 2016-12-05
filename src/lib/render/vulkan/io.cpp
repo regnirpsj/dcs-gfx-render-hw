@@ -21,6 +21,7 @@
 #include <array>    // std::array<>
 #include <ostream>  // std::ostream
 #include <typeinfo> // typeid
+#include <utility>  // std::make_pair<>, std::pair<>
 
 // includes, project
 
@@ -39,65 +40,7 @@ namespace {
 
   // variables, internal
   
-  // functions, internal
-  
-  template <typename T, typename S, std::size_t L>
-  inline std::ostream&
-  get_enum(std::ostream& os, T const& a, std::array<std::pair<T, S>, L> const& b)
-  {
-    std::ostream::sentry const cerberus(os);
-
-    if (cerberus) { 
-      os << '[';
-
-      bool found(false);
-      
-      for (auto e : b) {
-        if (a == e.first) {
-          os << e.second;
-
-          found = true;
-
-          break;
-        }
-      }
-
-      if (!found) {
-        os << "INVALID (" << signed(a) << ')';
-      }
-
-      os << ']';
-    }
-
-    return os;
-  }
-  
-  template <typename T, typename S, std::size_t L>
-  inline std::ostream&
-  get_flags(std::ostream& os, T const& a, std::array<std::pair<T, S>, L> const& b)
-  {
-    std::ostream::sentry const cerberus(os);
-
-    if (cerberus) {
-      os << '[';
-
-      if (a) {
-        for (auto f : b) {
-          if (a & f.first) {
-            os << f.second << '|';
-          }
-        }
-
-        os << hugh::support::ostream::remove(1);
-      } else {
-        os << "NONE";
-      }
-
-      os << ']';
-    }
-
-    return os;
-  }
+  // functions, internal  
   
   template <typename T>
   inline std::ostream&
@@ -150,7 +93,7 @@ namespace hugh {
                          "INTERNAL_ALLOCATION_TYPE_EXECUTABLE"),
         };
 
-        return get_enum(os, a, types);
+        return os << support::ostream::enumerate(a, types);
       }
 
       std::ostream&
@@ -196,7 +139,7 @@ namespace hugh {
           std::make_pair(VK_ERROR_INVALID_SHADER_NV,        "ERROR_INVALID_SHADER_NV"),
         };
 
-        return get_enum(os, a, results);
+        return os << support::ostream::enumerate(a, results);
       }
 
       std::ostream&
@@ -217,7 +160,7 @@ namespace hugh {
           std::make_pair(VK_SYSTEM_ALLOCATION_SCOPE_INSTANCE, "SYSTEM_ALLOCATION_SCOPE_INSTANCE"),
         };
 
-        return get_enum(os, a, scopes);
+        return os << support::ostream::enumerate(a, scopes);
       }
       
     } // namespace vulkan {
