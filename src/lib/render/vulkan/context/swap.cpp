@@ -18,9 +18,7 @@
 
 // includes, system
 
-// #include <glm/gtx/io.hpp> // glm::io::*
-// #include <ostream>        // std::ostream
-#include <stdexcept>      // std::logic_error, std::runtime_error
+#include <stdexcept> // std::logic_error, std::runtime_error
 
 // includes, project
 
