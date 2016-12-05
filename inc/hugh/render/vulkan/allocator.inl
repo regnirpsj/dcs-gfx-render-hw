@@ -18,11 +18,12 @@
 
 // includes, system
 
-#include <cstdlib> // std::aligned_alloc
+#include <iostream> // std::cout
+#include <cstdlib>  // std::aligned_alloc
 
 // includes, project
 
-//#include <>
+#include <hugh/render/vulkan/io.hpp>
 
 #define HUGH_USE_TRACE
 #undef HUGH_USE_TRACE
@@ -47,15 +48,15 @@ namespace hugh {
           .pfnAllocation         = &allocator::alloc,
           .pfnReallocation       = &allocator::realloc,
           .pfnFree               = &allocator::dealloc,
-          .pfnInternalAllocation = nullptr,
-          .pfnInternalFree       = nullptr,
+          .pfnInternalAllocation = &allocator::notify_alloc,
+          .pfnInternalFree       = &allocator::notify_free,
           }
       {}
       
       inline
-      allocator::operator ::VkAllocationCallbacks const& () const
+      allocator::operator ::VkAllocationCallbacks const* () const
       {
-        return cb_;
+        return &cb_;
       }
 
       /* static */ inline void* VKAPI_CALL
@@ -76,6 +77,24 @@ namespace hugh {
         static_cast<allocator*>(a)->dealloc(b);
       }
 
+      /* static */ inline void VKAPI_CALL
+      allocator::notify_alloc(void* a, size_t b, ::VkInternalAllocationType c,
+                              ::VkSystemAllocationScope d)
+      {
+        std::cout << support::trace::prefix() << "hugh::render::vulkan::allocator::notify_alloc: "
+                  << '@' << a << '+' << b << '(' << c << ',' << d << ')'
+                  << std::endl;
+      }
+
+      /* static */ inline void VKAPI_CALL
+      allocator::notify_free(void* a, size_t b, ::VkInternalAllocationType c,
+                             ::VkSystemAllocationScope d)
+      {
+        std::cout << support::trace::prefix() << "hugh::render::vulkan::allocator::notify_free: "
+                  << '@' << a << '+' << b << '(' << c << ',' << d << ')'
+                  << std::endl;
+      }
+      
       inline void*
       allocator::alloc(size_t a, size_t b, ::VkSystemAllocationScope)
       {

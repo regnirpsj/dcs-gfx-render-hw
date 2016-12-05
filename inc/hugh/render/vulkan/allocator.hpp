@@ -38,7 +38,7 @@ namespace hugh {
 
         allocator();
         
-        operator ::VkAllocationCallbacks const& () const;
+        operator ::VkAllocationCallbacks const* () const;
 
       private:
 
@@ -58,6 +58,16 @@ namespace hugh {
         static void  VKAPI_CALL dealloc(void*                     /* user data */,
                                         void*                     /* memory    */);
 
+        static void  VKAPI_CALL notify_alloc(void*                      /* user data        */,
+                                             size_t                     /* size             */,
+                                             ::VkInternalAllocationType /* allocation type  */,
+                                             ::VkSystemAllocationScope  /* allocation scope */);
+        
+        static void  VKAPI_CALL notify_free(void*                       /* user data        */,
+                                            size_t                      /* size             */,
+                                            ::VkInternalAllocationType  /* allocation type  */,
+                                            ::VkSystemAllocationScope   /* allocation scope */);
+ 
         void* alloc  (size_t                    /* size      */,
                       size_t                    /* alignment */,
                       ::VkSystemAllocationScope /* scope     */);
