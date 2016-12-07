@@ -6,40 +6,42 @@
 /*                                                                                                */
 /**************************************************************************************************/
 /*                                                                                                */
-/*  module     :  hugh/render/vulkan/test/compile.cpp                                             */
+/*  module     :  hugh/render/vulkan/utilities.hpp                                                */
 /*  project    :                                                                                  */
 /*  description:                                                                                  */
 /*                                                                                                */
 /**************************************************************************************************/
 
+#if !defined(HUGH_RENDER_VULKAN_UTILITIES_HPP)
+
+#define HUGH_RENDER_VULKAN_UTILITIES_HPP
+
 // includes, system
 
-//#include <>
+#include <vulkan/vulkan.h> // [V|v]k_*
 
 // includes, project
 
-#include <hugh/render/vulkan.hpp>
+//#include <>
 
-#define HUGH_USE_TRACE
-#undef HUGH_USE_TRACE
-#include <hugh/support/trace.hpp>
+namespace hugh {
 
-// internal unnamed namespace
+  namespace render {
 
-namespace {
+    namespace vulkan {
+      
+      // types, exported (class, enum, struct, union, typedef)
+      
+      // variables, exported (extern)
+
+      // functions, inlined (inline)
   
-  // types, internal (class, enum, struct, union, typedef)
+      // functions, exported (extern)
 
-  // variables, internal
+    } //  namespace vulkan {
+
+  } // namespace render {
   
-  // functions, internal
+} // namespace hugh {
 
-} // namespace {
-
-#define BOOST_TEST_MAIN
-#include <boost/test/unit_test.hpp>
-
-BOOST_AUTO_TEST_CASE(test_hugh_render_vulkan_compile)
-{
-  BOOST_CHECK(true);
-}
+#endif // #if !defined(HUGH_RENDER_VULKAN_UTILITIES_HPP)

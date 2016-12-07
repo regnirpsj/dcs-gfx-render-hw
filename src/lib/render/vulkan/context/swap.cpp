@@ -62,7 +62,7 @@ namespace hugh {
                                   std::bind(&swap::cb_get_surface, this),
                                   std::bind(&swap::cb_set_surface, this, std::placeholders::_1)),
             device_              (a),
-            surface_             (*device_.instance, ::vkDestroySurfaceKHR)
+            surface_             (**device_.instance, ::vkDestroySurfaceKHR)
         {
           TRACE("hugh::render::vulkan::context::swap::swap");
         }

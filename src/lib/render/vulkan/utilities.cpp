@@ -6,19 +6,24 @@
 /*                                                                                                */
 /**************************************************************************************************/
 /*                                                                                                */
-/*  module     :  hugh/render/vulkan/test/compile.cpp                                             */
+/*  module     :  hugh/render/vulkan/utilities.cpp                                                */
 /*  project    :                                                                                  */
 /*  description:                                                                                  */
 /*                                                                                                */
 /**************************************************************************************************/
 
+// include i/f header
+
+#include "hugh/render/vulkan/utilities.hpp"
+
 // includes, system
 
-//#include <>
+#include <vector>    // std::vector<>
+#include <stdexcept> // std::logic_error
 
 // includes, project
 
-#include <hugh/render/vulkan.hpp>
+//#include <>
 
 #define HUGH_USE_TRACE
 #undef HUGH_USE_TRACE
@@ -33,13 +38,21 @@ namespace {
   // variables, internal
   
   // functions, internal
-
+  
 } // namespace {
 
-#define BOOST_TEST_MAIN
-#include <boost/test/unit_test.hpp>
+namespace hugh {
+  
+  namespace render {
 
-BOOST_AUTO_TEST_CASE(test_hugh_render_vulkan_compile)
-{
-  BOOST_CHECK(true);
-}
+    namespace vulkan {
+
+      // variables, exported
+  
+      // functions, exported  
+      
+    } //  namespace vulkan {
+
+  } // namespace render {
+
+} // namespace hugh {

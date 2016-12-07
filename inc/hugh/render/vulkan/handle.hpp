@@ -25,6 +25,7 @@
 
 #include <hugh/render/vulkan/export.h>
 #include <hugh/support/printable.hpp>
+#include <hugh/support/refcounted.hpp>
 
 namespace hugh {
   
@@ -38,18 +39,19 @@ namespace hugh {
        * adapted from [https://vulkan-tutorial.com/]
        */
       template <typename T>
-      class handle : public support::printable {
+      class handle : public support::refcounted<handle<T>>,
+                     public support::printable {
         
       public:
 
-        using delete_generic  = std::function<void(              T, ::VkAllocationCallbacks*)>;
-        using delete_instance = std::function<void(::VkInstance, T, ::VkAllocationCallbacks*)>;
-        using delete_device   = std::function<void(::VkDevice,   T, ::VkAllocationCallbacks*)>;
+        using delete_with_nothing  = std::function<void(              T, ::VkAllocationCallbacks*)>;
+        using delete_with_instance = std::function<void(::VkInstance, T, ::VkAllocationCallbacks*)>;
+        using delete_with_device   = std::function<void(::VkDevice,   T, ::VkAllocationCallbacks*)>;
         
         handle();
-        handle(                             delete_generic);
-        handle(handle<::VkInstance> const&, delete_instance);
-        handle(handle<::VkDevice> const&,   delete_device);
+        handle(                             delete_with_nothing);
+        handle(handle<::VkInstance> const&, delete_with_instance);
+        handle(handle<::VkDevice> const&,   delete_with_device);
         ~handle();
 
         /*
@@ -80,7 +82,7 @@ namespace hugh {
 
         virtual void print_on(std::ostream&) const;
         
-      private:
+      protected:
         
         T                       object_;
         std::function<void (T)> deleter_;

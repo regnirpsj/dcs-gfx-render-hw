@@ -25,9 +25,12 @@ include_directories(SYSTEM ${HUGH_INCLUDE_DIRS})
 
 set(SRC)
 
+list(APPEND SRC adapter.cpp)
 list(APPEND SRC allocator.cpp)
 list(APPEND SRC handle.cpp)
+list(APPEND SRC instance.cpp)
 list(APPEND SRC io.cpp)
+list(APPEND SRC utilities.cpp)
 
 list(APPEND SRC context/device.cpp)
 list(APPEND SRC context/swap.cpp)

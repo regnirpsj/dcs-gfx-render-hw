@@ -48,32 +48,38 @@ namespace hugh {
 
       template <typename T>
       inline
-      handle<T>::handle(delete_generic a)
-        : object_ (nullptr),
-          deleter_([=](T o) { a(o, nullptr); })
+      handle<T>::handle(delete_with_nothing a)
+        : support::refcounted<handle<T>>(),
+          support::printable            (),
+          object_                       (nullptr),
+          deleter_                      ([=] (T o) { a(o, nullptr); })
       {
         TRACE("hugh::render::vulkan::handle<" + support::demangle(typeid(T)) +
-              ">::handle(delete_generic)");
+              ">::handle(delete_with_nothing)");
       }
 
       template <typename T>
       inline
-      handle<T>::handle(handle<::VkInstance> const& a, delete_instance b)
-        : object_ (nullptr),
-          deleter_([&a, b](T o) { b(a, o, nullptr); })
+      handle<T>::handle(handle<::VkInstance> const& a, delete_with_instance b)
+        : support::refcounted<handle<T>>(),
+          support::printable            (),
+          object_                       (nullptr),
+          deleter_                      ([&a, b] (T o) { b(a, o, nullptr); })
       {
         TRACE("hugh::render::vulkan::handle<" + support::demangle(typeid(T)) +
-              ">::handle(delete_instance)");
+              ">::handle(delete_with_instance)");
       }
 
       template <typename T>
       inline
-      handle<T>::handle(handle<::VkDevice> const& a, delete_device b)
-        : object_ (nullptr),
-          deleter_([&a, b](T o) { b(a, o, nullptr); })
+      handle<T>::handle(handle<::VkDevice> const& a, delete_with_device b)
+        : support::refcounted<handle<T>>(),
+          support::printable            (),
+          object_                       (nullptr),
+          deleter_                      ([&a, b] (T o) { b(a, o, nullptr); })
       {
         TRACE("hugh::render::vulkan::handle<" + support::demangle(typeid(T)) +
-              ">::handle(delete_device)");
+              ">::handle(delete_with_device)");
       }
 
       template <typename T>

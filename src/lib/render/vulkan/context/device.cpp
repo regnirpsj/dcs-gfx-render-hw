@@ -97,13 +97,13 @@ namespace hugh {
         // functions, exported
 
         /* explicit */
-        device::device()
+        device::device(adapter* a)
           : render::context::device(),
             instance               (*this, "instance",
                                     std::bind(&device::cb_get_instance, this),
                                     std::bind(&device::cb_set_instance, this,
                                               std::placeholders::_1)),
-            physical               (*this, "phyiscal",
+            physical               (*this, "physical",
                                     std::bind(&device::cb_get_physical, this),
                                     std::bind(&device::cb_set_physical, this,
                                               std::placeholders::_1)),
@@ -115,99 +115,45 @@ namespace hugh {
                                     std::bind(&device::cb_get_queue,  this),
                                     std::bind(&device::cb_set_queue,  this,
                                               std::placeholders::_1)),
-            instance_              (::vkDestroyInstance),
-            physical_              (),
+            physical_              ((nullptr != a) ? a : new adapter),
+            instance_              (physical_->instance),
             logical_               (::vkDestroyDevice),
             queue_                 ()
         {
           TRACE("hugh::render::vulkan::context::device::device");
+          
+          float const                dflt_queue_priority(0.0f);
+          queue_family_indices const indices(find_queue_families(*physical_));
 
-          { // instance
-            ::VkApplicationInfo const ai = {
-              .sType         = VK_STRUCTURE_TYPE_APPLICATION_INFO,
-              .pEngineName   = "hugh-render-vulkan",
-              .engineVersion = VK_MAKE_VERSION(1, 0, 0),
-              .apiVersion    = VK_API_VERSION_1_0,
-            };
+          VkDeviceQueueCreateInfo dqci = { };
+          
+          dqci.sType            = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+          dqci.queueFamilyIndex = unsigned(indices.graphics_family);
+          dqci.queueCount       = 1;
+          dqci.pQueuePriorities = &dflt_queue_priority;
             
-            ::VkInstanceCreateInfo    ici = {
-              .sType             = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
-              .pApplicationInfo  = &ai,
-              .enabledLayerCount = 0,
-            };
-
-            VkResult const result(::vkCreateInstance(&ici, nullptr, &instance_));
+          ::VkPhysicalDeviceFeatures pdf = { };
             
-            if (VK_SUCCESS != result) {
-              std::ostringstream ostr;
+          ::VkDeviceCreateInfo dci = { };
 
-              ostr << "'vkCreateInstance' failed (" << result << ")!";
-              
-              std::runtime_error(ostr.str());
-            }
+          dci.sType                 = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+          dci.pQueueCreateInfos     = &dqci;
+          dci.queueCreateInfoCount  = 1;
+          dci.pEnabledFeatures      = &pdf;
+          dci.enabledExtensionCount = 0;
+          dci.enabledLayerCount     = 0;
+
+          VkResult const result(::vkCreateDevice(*physical_, &dci, nullptr, &logical_));
+
+          if (VK_SUCCESS != result) {
+            std::ostringstream ostr;
+
+            ostr << "'vkCreateDevice' failed (" << result << ")!";
+            
+            std::runtime_error(ostr.str());
           }
 
-          { // adapter
-            unsigned count(0);
-            
-            ::vkEnumeratePhysicalDevices(*instance_, &count, nullptr);
-
-            if (0 == count) {
-              throw std::runtime_error("'vkEnumeratePhysicalDevices'"
-                                       "failed to find GPUs with Vulkan support!");
-            }
-
-            std::vector<::VkPhysicalDevice> adapter_list(count);
-            
-            ::vkEnumeratePhysicalDevices(*instance_, &count, adapter_list.data());
-
-            for (const auto& a : adapter_list) {
-              if (find_queue_families(a).is_complete()) {
-                physical_ = a;
-                
-                break;
-              }
-            }
-
-            if (nullptr == physical_) {
-              throw std::runtime_error("'vkEnumeratePhysicalDevices'"
-                                       "did not find a suitable GPU!");
-            }
-          }
-
-          { // device
-            queue_family_indices const indices(find_queue_families(physical_));
-
-            VkDeviceQueueCreateInfo const dqci = {
-              .sType            = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
-              .queueFamilyIndex = unsigned(indices.graphics_family),
-              .queueCount       = 1,
-            };
-
-            ::VkPhysicalDeviceFeatures const pdf = {
-            };
-            
-            ::VkDeviceCreateInfo const dci = {
-              .sType                 = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
-              .pQueueCreateInfos     = &dqci,
-              .queueCreateInfoCount  = 1,
-              .pEnabledFeatures      = &pdf,
-              .enabledExtensionCount = 0,
-              .enabledLayerCount     = 0,
-            };
-
-            VkResult const result(::vkCreateDevice(*physical_, &dci, nullptr, &logical_));
-
-            if (VK_SUCCESS != result) {
-              std::ostringstream ostr;
-
-              ostr << "'vkCreateDevice' failed (" << result << ")!";
-              
-              std::runtime_error(ostr.str());
-            }
-
-            ::vkGetDeviceQueue(*logical_, indices.graphics_family, 0, &queue_);
-          }
+          ::vkGetDeviceQueue(*logical_, indices.graphics_family, 0, &queue_);
         }
         
         /* virtual */
@@ -215,25 +161,26 @@ namespace hugh {
         {
           TRACE("hugh::render::vulkan::context::device::~device");
         }
-
-        device::instance_handle_type const&
+        
+        device::instance_type const&
         device::cb_get_instance() const
         {
           TRACE("hugh::render::vulkan::context::device::cb_get_instance");
 
           return instance_;
         }
-
-        device::instance_handle_type
-        device::cb_set_instance(instance_handle_type const&)
+        
+        device::instance_type
+        device::cb_set_instance(instance_type const&)
         {
           TRACE("hugh::render::vulkan::context::device::cb_set_instance");
-
+          
           throw std::logic_error("invalid operation "
                                  "'hugh::render::vulkan::context::device::cb_set_instance'");
 
-          return instance_handle_type();
+          return instance_type();
         }
+
 
         device::device_handle_type const&
         device::cb_get_logical() const
@@ -254,7 +201,7 @@ namespace hugh {
           return device_handle_type();
         }
 
-        device::adapter_handle_type const&
+        device::adapter_type const&
         device::cb_get_physical() const
         {
           TRACE("hugh::render::vulkan::context::device::cb_get_physical");
@@ -262,15 +209,15 @@ namespace hugh {
           return physical_;
         }
         
-        device::adapter_handle_type
-        device::cb_set_physical(adapter_handle_type const&)
+        device::adapter_type
+        device::cb_set_physical(adapter_type const&)
         {
           TRACE("hugh::render::vulkan::context::device::cb_set_physical");
           
           throw std::logic_error("invalid operation "
                                  "'hugh::render::vulkan::context::device::cb_set_physical'");
 
-          return adapter_handle_type();
+          return adapter_type();
         }
         
         device::queue_handle_type const&

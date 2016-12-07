@@ -6,7 +6,7 @@
 /*                                                                                                */
 /**************************************************************************************************/
 /*                                                                                                */
-/*  module     :  hugh/render/vulkan/test/compile.cpp                                             */
+/*  module     :  hugh/render/vulkan/test/adapter.cpp                                             */
 /*  project    :                                                                                  */
 /*  description:                                                                                  */
 /*                                                                                                */
@@ -18,7 +18,7 @@
 
 // includes, project
 
-#include <hugh/render/vulkan.hpp>
+#include <hugh/render/vulkan/adapter.hpp>
 
 #define HUGH_USE_TRACE
 #undef HUGH_USE_TRACE
@@ -39,7 +39,29 @@ namespace {
 #define BOOST_TEST_MAIN
 #include <boost/test/unit_test.hpp>
 
-BOOST_AUTO_TEST_CASE(test_hugh_render_vulkan_compile)
+BOOST_AUTO_TEST_CASE(test_hugh_render_vulkan_test_adapter_ctor_dflt)
 {
-  BOOST_CHECK(true);
+  using namespace hugh::render::vulkan;
+
+  std::unique_ptr<adapter> a(new adapter);
+  
+  BOOST_CHECK       (nullptr != a);
+  BOOST_TEST_MESSAGE(*a);
+}
+
+BOOST_AUTO_TEST_CASE(test_hugh_render_vulkan_test_adapter_ctor_user)
+{
+  using namespace hugh::render::vulkan;
+  using string_list_type = instance::string_list_type;
+
+  string_list_type const l;
+  string_list_type const e({ VK_KHR_SURFACE_EXTENSION_NAME });
+  instance*              i(new instance(l, e));
+
+  BOOST_CHECK(nullptr != i);
+  
+  std::unique_ptr<adapter> a(new adapter(i));
+  
+  BOOST_CHECK       (nullptr != a);
+  BOOST_TEST_MESSAGE(*a);
 }

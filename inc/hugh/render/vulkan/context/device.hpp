@@ -18,14 +18,14 @@
 
 // includes, system
 
-#include <vulkan/vulkan.h> // [V|v]k*
+#include <boost/intrusive_ptr.hpp> // boost::intrusive_ptr<>
+#include <vulkan/vulkan.h>         // [V|v]k*
 
 // includes, project
 
 #include <hugh/field/adapter/single.hpp>
 #include <hugh/render/context/device.hpp>
-#include <hugh/render/vulkan/export.h>
-#include <hugh/render/vulkan/handle.hpp>
+#include <hugh/render/vulkan/adapter.hpp>
 
 namespace hugh {
   
@@ -41,34 +41,34 @@ namespace hugh {
 
         public:
 
-          using adapter_handle_type  = handle<::VkPhysicalDevice>;
-          using device_handle_type   = handle<::VkDevice>;
-          using instance_handle_type = handle<::VkInstance>;          
-          using queue_handle_type    = handle<::VkQueue>;
+          using adapter_type       = boost::intrusive_ptr<vulkan::adapter const>;
+          using device_handle_type = vulkan::handle<::VkDevice>;
+          using instance_type      = boost::intrusive_ptr<vulkan::instance const>;
+          using queue_handle_type  = vulkan::handle<::VkQueue>;
+
+          field::adapter::single<instance_type> const      instance; //< instance
+          field::adapter::single<adapter_type> const       physical; //< adapter
+          field::adapter::single<device_handle_type> const logical;  //< device
+          field::adapter::single<queue_handle_type> const  queue;    //< device queue
           
-          field::adapter::single<instance_handle_type> const instance; //< vulkan instance
-          field::adapter::single<adapter_handle_type> const  physical; //< adapter
-          field::adapter::single<device_handle_type> const   logical;  //< device
-          field::adapter::single<queue_handle_type> const    queue;    //< device queue
-          
-          explicit device();
+          explicit device(adapter* = nullptr);
           virtual ~device();
           
         private:
 
-          instance_handle_type instance_;
-          adapter_handle_type  physical_;
-          device_handle_type   logical_;
-          queue_handle_type    queue_;
+          adapter_type       physical_;
+          instance_type      instance_;
+          device_handle_type logical_;
+          queue_handle_type  queue_;
           
-          instance_handle_type const& cb_get_instance() const;
-          instance_handle_type        cb_set_instance(instance_handle_type const&);
-          device_handle_type const&   cb_get_logical () const;
-          device_handle_type          cb_set_logical (device_handle_type const&);
-          adapter_handle_type const&  cb_get_physical() const;
-          adapter_handle_type         cb_set_physical(adapter_handle_type const&);
-          queue_handle_type const&    cb_get_queue   () const;
-          queue_handle_type           cb_set_queue   (queue_handle_type const&);
+          instance_type const&      cb_get_instance() const;
+          instance_type             cb_set_instance(instance_type const&);
+          device_handle_type const& cb_get_logical () const;
+          device_handle_type        cb_set_logical (device_handle_type const&);
+          adapter_type const&       cb_get_physical() const;
+          adapter_type              cb_set_physical(adapter_type const&);
+          queue_handle_type const&  cb_get_queue   () const;
+          queue_handle_type         cb_set_queue   (queue_handle_type const&);
           
         };
         

@@ -40,7 +40,7 @@ namespace hugh {
         public:
 
           using device_context_type = context::device;
-          using surface_handle_type = handle<::VkSurfaceKHR>;
+          using surface_handle_type = vulkan::handle<::VkSurfaceKHR>;
 
           field::adapter::single<device_context_type> const device;  //< device context
           field::adapter::single<surface_handle_type> const surface; //< surface
