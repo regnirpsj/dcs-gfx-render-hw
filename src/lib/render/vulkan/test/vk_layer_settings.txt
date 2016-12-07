@@ -1,0 +1,42 @@
+# VK_LAYER_LUNARG_device_limits Settings
+lunarg_device_limits.debug_action = VK_DBG_LAYER_ACTION_LOG_MSG
+lunarg_device_limits.report_flags = error,warn,perf
+lunarg_device_limits.log_filename = stdout
+
+# VK_LAYER_LUNARG_core_validation Settings
+lunarg_core_validation.debug_action = VK_DBG_LAYER_ACTION_LOG_MSG
+lunarg_core_validation.report_flags = error,warn,perf,info
+lunarg_core_validation.log_filename = stdout
+
+# VK_LAYER_LUNARG_image Settings
+lunarg_image.debug_action = VK_DBG_LAYER_ACTION_LOG_MSG
+lunarg_image.report_flags = error,warn,perf
+lunarg_image.log_filename = stdout
+
+# VK_LAYER_LUNARG_object_tracker Settings
+lunarg_object_tracker.debug_action = VK_DBG_LAYER_ACTION_LOG_MSG
+lunarg_object_tracker.report_flags = error,warn,perf
+lunarg_object_tracker.log_filename = stdout
+
+# VK_LAYER_LUNARG_parameter_validation Settings
+lunarg_parameter_validation.debug_action = VK_DBG_LAYER_ACTION_LOG_MSG
+lunarg_parameter_validation.report_flags = error,warn,perf
+lunarg_parameter_validation.log_filename = stdout
+
+# VK_LAYER_LUNARG_swapchain Settings
+lunarg_swapchain.debug_action = VK_DBG_LAYER_ACTION_LOG_MSG
+lunarg_swapchain.report_flags = error,warn,perf
+lunarg_swapchain.log_filename = stdout
+
+# VK_LAYER_GOOGLE_threading Settings
+google_threading.debug_action = VK_DBG_LAYER_ACTION_LOG_MSG
+google_threading.report_flags = error,warn,perf
+google_threading.log_filename = stdout
+
+lunarg_api_dump.debug_action = VK_DBG_LAYER_ACTION_LOG_MSG
+lunarg_api_dump.report_flags = error,warn,perf
+lunarg_api_dump.detailed = TRUE
+lunarg_api_dump.no_addr = FALSE
+lunarg_api_dump.file = FALSE
+lunarg_api_dump.log_filename = stdout
+lunarg_api_dump.flush = FALSE
