@@ -40,11 +40,15 @@ namespace hugh {
       // functions, exported (extern)
 
       HUGH_RENDER_VULKAN_EXPORT std::ostream& operator<<(std::ostream&, ::VkDevice const&);
+      HUGH_RENDER_VULKAN_EXPORT std::ostream& operator<<(std::ostream&, ::VkExtent3D const&);
       HUGH_RENDER_VULKAN_EXPORT std::ostream& operator<<(std::ostream&, ::VkInstance const&);
       HUGH_RENDER_VULKAN_EXPORT std::ostream& operator<<(std::ostream&,
                                                          ::VkInternalAllocationType const&);
       HUGH_RENDER_VULKAN_EXPORT std::ostream& operator<<(std::ostream&, ::VkPhysicalDevice const&);
       HUGH_RENDER_VULKAN_EXPORT std::ostream& operator<<(std::ostream&, ::VkQueue const&);
+      HUGH_RENDER_VULKAN_EXPORT std::ostream& operator<<(std::ostream&,
+                                                         ::VkQueueFamilyProperties const&);
+      HUGH_RENDER_VULKAN_EXPORT std::ostream& operator<<(std::ostream&, ::VkQueueFlagBits const&);
       HUGH_RENDER_VULKAN_EXPORT std::ostream& operator<<(std::ostream&, ::VkResult const&);
       HUGH_RENDER_VULKAN_EXPORT std::ostream& operator<<(std::ostream&, ::VkSurfaceKHR const&);
       HUGH_RENDER_VULKAN_EXPORT std::ostream& operator<<(std::ostream&,

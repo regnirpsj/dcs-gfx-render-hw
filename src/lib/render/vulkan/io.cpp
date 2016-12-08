@@ -77,6 +77,22 @@ namespace hugh {
       {
         return get_handle(os, a, "VkDevice");
       }
+
+      std::ostream&
+      operator<<(std::ostream& os, ::VkExtent3D const& a)
+      {
+        std::ostream::sentry const cerberus(os);
+        
+        if (cerberus) {
+          os << '['
+             << a.width  << ','
+             << a.height << ','
+             << a.depth
+             << "]";
+        }
+        
+        return os;
+      }
       
       std::ostream&
       operator<<(std::ostream& os, ::VkInstance const& a)
@@ -108,6 +124,36 @@ namespace hugh {
         return get_handle(os, a, "VkQueue");
       }
 
+      std::ostream&
+      operator<<(std::ostream& os, ::VkQueueFamilyProperties const& a)
+      {
+        std::ostream::sentry const cerberus(os);
+        
+        if (cerberus) {
+          os << '['
+             << ::VkQueueFlagBits(a.queueFlags) << ','
+             << a.queueCount                    << ','
+             << a.timestampValidBits            << ','
+             << a.minImageTransferGranularity
+             << "]";
+        }
+        
+        return os;
+      }
+
+      std::ostream&
+      operator<<(std::ostream& os, ::VkQueueFlagBits const& a)
+      {
+        static std::array<std::pair<::VkQueueFlagBits, std::string const>, 4> const flags = {
+          std::make_pair(VK_QUEUE_COMPUTE_BIT,        "COMPUTE"),
+          std::make_pair(VK_QUEUE_GRAPHICS_BIT,       "GRAPHICS"),
+          std::make_pair(VK_QUEUE_SPARSE_BINDING_BIT, "SPARSE_BINDING"),
+          std::make_pair(VK_QUEUE_TRANSFER_BIT,       "TRANSFER"),
+        };
+        
+        return os << support::ostream::flags(a, flags);
+      }
+      
       std::ostream&
       operator<<(std::ostream& os, ::VkResult const& a)
       {
