@@ -97,7 +97,7 @@ namespace hugh {
         // functions, exported
 
         /* explicit */
-        device::device(adapter* a)
+        device::device(vulkan::instance* a)
           : render::context::device(),
             instance               (*this, "instance",
                                     std::bind(&device::cb_get_instance, this),
@@ -115,8 +115,8 @@ namespace hugh {
                                     std::bind(&device::cb_get_queue,  this),
                                     std::bind(&device::cb_set_queue,  this,
                                               std::placeholders::_1)),
-            physical_              ((nullptr != a) ? a : new adapter),
-            instance_              (physical_->instance),
+            instance_              ((nullptr != a) ? a : new vulkan::instance),
+            physical_              (new adapter(*instance_)),
             logical_               (::vkDestroyDevice),
             queue_                 ()
         {

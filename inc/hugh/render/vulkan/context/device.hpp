@@ -51,13 +51,13 @@ namespace hugh {
           field::adapter::single<device_handle_type> const logical;  //< device
           field::adapter::single<queue_handle_type> const  queue;    //< device queue
           
-          explicit device(adapter* = nullptr);
+          explicit device(vulkan::instance* = nullptr);
           virtual ~device();
           
         private:
 
-          adapter_type       physical_;
           instance_type      instance_;
+          adapter_type       physical_;
           device_handle_type logical_;
           queue_handle_type  queue_;
           

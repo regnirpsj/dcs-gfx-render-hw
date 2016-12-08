@@ -23,6 +23,8 @@
 
 // includes, project
 
+#include <hugh/field/adapter/single.hpp>
+#include <hugh/field/container.hpp>
 #include <hugh/render/vulkan/instance.hpp>
 
 namespace hugh {
@@ -33,15 +35,35 @@ namespace hugh {
       
       // types, exported (class, enum, struct, union, typedef)
       
-      class HUGH_RENDER_VULKAN_EXPORT adapter : public handle<::VkPhysicalDevice> {
+      class HUGH_RENDER_VULKAN_EXPORT adapter : public field::container,
+                                                public handle<::VkPhysicalDevice> {
 
       public:
 
-        boost::intrusive_ptr<vulkan::instance const> const instance;
+        struct queue_family_t {
+          unsigned flags;
 
-        explicit adapter(vulkan::instance* = nullptr);
-        virtual ~adapter();        
+          struct {
+            signed compute;
+            signed graphics;
+            signed sparse_binding;
+            signed transfer;
+          } index;
+        };
 
+        field::adapter::single<queue_family_t const> const queue_family; //< queue family
+        
+        explicit adapter(vulkan::instance const&, unsigned = 0);
+        virtual ~adapter();
+
+        virtual void print_on(std::ostream&) const;
+        
+      private:
+
+        queue_family_t queue_family_;
+
+        queue_family_t const& get_cb_queue_family() const;
+        queue_family_t        set_cb_queue_family(queue_family_t const&);
         
       };
       
@@ -51,6 +73,9 @@ namespace hugh {
   
       // functions, exported (extern)
 
+      HUGH_RENDER_VULKAN_EXPORT std::ostream& operator<<(std::ostream&,
+                                                         adapter::queue_family_t const&);
+      
     } // namespace vulkan {
 
   } // namespace render {
