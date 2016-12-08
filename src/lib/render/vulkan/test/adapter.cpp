@@ -43,10 +43,12 @@ BOOST_AUTO_TEST_CASE(test_hugh_render_vulkan_test_adapter_ctor_dflt)
 {
   using namespace hugh::render::vulkan;
 
-  std::unique_ptr<adapter> a(new adapter);
+  instance                 i;
+  std::unique_ptr<adapter> a(new adapter(i));
   
   BOOST_CHECK       (nullptr != a);
-  BOOST_TEST_MESSAGE(*a);
+  //BOOST_TEST_MESSAGE(*a);
+  a->print_on(std::cout);
 }
 
 BOOST_AUTO_TEST_CASE(test_hugh_render_vulkan_test_adapter_ctor_user)
@@ -56,12 +58,11 @@ BOOST_AUTO_TEST_CASE(test_hugh_render_vulkan_test_adapter_ctor_user)
 
   string_list_type const l;
   string_list_type const e({ VK_KHR_SURFACE_EXTENSION_NAME });
-  instance*              i(new instance(l, e));
-
-  BOOST_CHECK(nullptr != i);
+  instance               i(l, e);
   
-  std::unique_ptr<adapter> a(new adapter(i));
+  std::unique_ptr<adapter> a(new adapter(i, 1));
   
   BOOST_CHECK       (nullptr != a);
-  BOOST_TEST_MESSAGE(*a);
+  //BOOST_TEST_MESSAGE(*a);
+  a->print_on(std::cout);
 }
