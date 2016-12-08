@@ -39,7 +39,7 @@ namespace hugh {
       // functions, inlined (inline)  
 
       template <typename T>
-      inline
+      /* explicit */ inline
       handle<T>::handle()
         : handle([](T, ::VkAllocationCallbacks*) {})
       {
@@ -47,7 +47,7 @@ namespace hugh {
       }
 
       template <typename T>
-      inline
+      /* explicit */ inline
       handle<T>::handle(delete_with_nothing a)
         : support::refcounted<handle<T>>(),
           support::printable            (),
@@ -59,7 +59,7 @@ namespace hugh {
       }
 
       template <typename T>
-      inline
+      /* explicit */ inline
       handle<T>::handle(handle<::VkInstance> const& a, delete_with_instance b)
         : support::refcounted<handle<T>>(),
           support::printable            (),
@@ -71,7 +71,7 @@ namespace hugh {
       }
 
       template <typename T>
-      inline
+      /* explicit */ inline
       handle<T>::handle(handle<::VkDevice> const& a, delete_with_device b)
         : support::refcounted<handle<T>>(),
           support::printable            (),
@@ -83,7 +83,7 @@ namespace hugh {
       }
 
       template <typename T>
-      inline
+      /* virtual */ inline
       handle<T>::~handle()
       {
         TRACE("hugh::render::vulkan::handle<" + support::demangle(typeid(T)) + ">::~handle");

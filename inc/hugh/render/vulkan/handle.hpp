@@ -48,11 +48,11 @@ namespace hugh {
         using delete_with_instance = std::function<void(::VkInstance, T, ::VkAllocationCallbacks*)>;
         using delete_with_device   = std::function<void(::VkDevice,   T, ::VkAllocationCallbacks*)>;
         
-        handle();
-        handle(                             delete_with_nothing);
-        handle(handle<::VkInstance> const&, delete_with_instance);
-        handle(handle<::VkDevice> const&,   delete_with_device);
-        ~handle();
+        explicit handle();
+        explicit handle(                             delete_with_nothing);
+        explicit handle(handle<::VkInstance> const&, delete_with_instance);
+        explicit handle(handle<::VkDevice> const&,   delete_with_device);
+        virtual ~handle();
 
         /*
          * returns a pointer to 'object'
