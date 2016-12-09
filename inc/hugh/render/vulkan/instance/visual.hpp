@@ -6,15 +6,15 @@
 /*                                                                                                */
 /**************************************************************************************************/
 /*                                                                                                */
-/*  module     :  hugh/render/vulkan/instamce.hpp                                                 */
+/*  module     :  hugh/render/vulkan/instance/visual.hpp                                          */
 /*  project    :                                                                                  */
 /*  description:                                                                                  */
 /*                                                                                                */
 /**************************************************************************************************/
 
-#if !defined(HUGH_RENDER_VULKAN_INSTANCE_HPP)
+#if !defined(HUGH_RENDER_VULKAN_INSTANCE_VISUAL_HPP)
 
-#define HUGH_RENDER_VULKAN_INSTANCE_HPP
+#define HUGH_RENDER_VULKAN_INSTANCE_VISUAL_HPP
 
 // includes, system
 
@@ -22,10 +22,10 @@
 
 // includes, project
 
-#include <hugh/render/vulkan/instance/visual.hpp>
+#include <hugh/render/vulkan/instance/base.hpp>
 
 namespace hugh {
-  
+
   namespace render {
 
     namespace vulkan {
@@ -34,6 +34,20 @@ namespace hugh {
         
         // types, exported (class, enum, struct, union, typedef)
 
+        class HUGH_RENDER_VULKAN_EXPORT visual : public base {
+
+        public:
+
+          using string_list_type = base::string_list_type;
+          
+          explicit visual(string_list_type const&    /* enabled layers     */ = string_list_type(),
+                          string_list_type const&    /* enabled extensions */ = string_list_type(),
+                          ::VkApplicationInfo const* /* app/engine info    */ = nullptr);
+
+          virtual ~visual();
+          
+        };
+      
         // variables, exported (extern)
 
         // functions, inlined (inline)
@@ -48,4 +62,4 @@ namespace hugh {
   
 } // namespace hugh {
 
-#endif // #if !defined(HUGH_RENDER_VULKAN_INSTANCE_HPP)
+#endif // #if !defined(HUGH_RENDER_VULKAN_INSTANCE_VISUAL_HPP)

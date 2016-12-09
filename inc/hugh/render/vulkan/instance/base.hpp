@@ -6,26 +6,28 @@
 /*                                                                                                */
 /**************************************************************************************************/
 /*                                                                                                */
-/*  module     :  hugh/render/vulkan/instamce.hpp                                                 */
+/*  module     :  hugh/render/vulkan/instance/base.hpp                                            */
 /*  project    :                                                                                  */
 /*  description:                                                                                  */
 /*                                                                                                */
 /**************************************************************************************************/
 
-#if !defined(HUGH_RENDER_VULKAN_INSTANCE_HPP)
+#if !defined(HUGH_RENDER_VULKAN_INSTANCE_BASE_HPP)
 
-#define HUGH_RENDER_VULKAN_INSTANCE_HPP
+#define HUGH_RENDER_VULKAN_INSTANCE_BASE_HPP
 
 // includes, system
 
-//#include <>
+#include <string> // std::string
+#include <vector> // std::vector<>
 
 // includes, project
 
-#include <hugh/render/vulkan/instance/visual.hpp>
+#include <hugh/render/vulkan/export.h>
+#include <hugh/render/vulkan/handle.hpp>
 
 namespace hugh {
-  
+
   namespace render {
 
     namespace vulkan {
@@ -34,6 +36,24 @@ namespace hugh {
         
         // types, exported (class, enum, struct, union, typedef)
 
+        class HUGH_RENDER_VULKAN_EXPORT base : public handle<::VkInstance> {
+
+        public:
+
+          virtual ~base();
+
+        protected:
+
+          using string_list_type = std::vector<std::string>;
+          
+          explicit base(string_list_type const&    /* default layers     */ = string_list_type(),
+                        string_list_type const&    /* enabled layers     */ = string_list_type(),
+                        string_list_type const&    /* default extensions */ = string_list_type(),
+                        string_list_type const&    /* enabled extensions */ = string_list_type(),
+                        ::VkApplicationInfo const* /* app/engine info    */ = nullptr);
+
+        };
+      
         // variables, exported (extern)
 
         // functions, inlined (inline)
@@ -48,4 +68,4 @@ namespace hugh {
   
 } // namespace hugh {
 
-#endif // #if !defined(HUGH_RENDER_VULKAN_INSTANCE_HPP)
+#endif // #if !defined(HUGH_RENDER_VULKAN_INSTANCE_BASE_HPP)
