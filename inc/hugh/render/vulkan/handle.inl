@@ -18,7 +18,7 @@
 
 // includes, system
 
-#include <typeinfo>
+#include <typeinfo> // required for typeid usage
 
 // includes, project
 
@@ -50,7 +50,6 @@ namespace hugh {
       /* explicit */ inline
       handle<T>::handle(delete_with_nothing a)
         : support::refcounted<handle<T>>(),
-          support::printable            (),
           object_                       (nullptr),
           deleter_                      ([=] (T o) { a(o, nullptr); })
       {
@@ -62,7 +61,6 @@ namespace hugh {
       /* explicit */ inline
       handle<T>::handle(handle<::VkInstance> const& a, delete_with_instance b)
         : support::refcounted<handle<T>>(),
-          support::printable            (),
           object_                       (nullptr),
           deleter_                      ([&a, b] (T o) { b(a, o, nullptr); })
       {
@@ -74,7 +72,6 @@ namespace hugh {
       /* explicit */ inline
       handle<T>::handle(handle<::VkDevice> const& a, delete_with_device b)
         : support::refcounted<handle<T>>(),
-          support::printable            (),
           object_                       (nullptr),
           deleter_                      ([&a, b] (T o) { b(a, o, nullptr); })
       {
@@ -84,7 +81,7 @@ namespace hugh {
 
       template <typename T>
       /* virtual */ inline
-      handle<T>::~handle()
+      handle<T>::~handle() noexcept (false)
       {
         TRACE("hugh::render::vulkan::handle<" + support::demangle(typeid(T)) + ">::~handle");
         
@@ -197,9 +194,9 @@ namespace hugh {
       }
 
       template <typename T>
-      /* virtual */ inline void
+      inline void
       handle<T>::print_on(std::ostream& os) const
-      { 
+      {
         TRACE_NEVER("hugh::render::vulkan::handle<" + support::demangle(typeid(T)) + ">::print_on");
 
         os << '['
@@ -212,7 +209,7 @@ namespace hugh {
         os << deleter_
            << ']';
       }
-        
+
       template <typename T>
       inline void
       handle<T>::cleanup()
@@ -225,7 +222,20 @@ namespace hugh {
           object_ = nullptr;
         }        
       }
-      
+
+      template <typename T>
+      inline std::ostream&
+      operator<<(std::ostream& os, handle<T> const& a)
+      {
+        std::ostream::sentry const cerberus(os);
+
+        if (cerberus) {
+          a.print_on(os);
+        }
+        
+        return os;
+      }
+
     } // namespace vulkan {
 
   } // namespace render {

@@ -39,8 +39,7 @@ namespace hugh {
        * adapted from [https://vulkan-tutorial.com/]
        */
       template <typename T>
-      class handle : public support::refcounted<handle<T>>,
-                     public support::printable {
+      class handle : public support::refcounted<handle<T>> {
         
       public:
 
@@ -52,7 +51,7 @@ namespace hugh {
         explicit handle(                             delete_with_nothing);
         explicit handle(handle<::VkInstance> const&, delete_with_instance);
         explicit handle(handle<::VkDevice> const&,   delete_with_device);
-        virtual ~handle();
+        virtual ~handle() noexcept (false);
 
         /*
          * returns a pointer to 'object'
@@ -78,10 +77,10 @@ namespace hugh {
         
         void operator=(T const&);
 
-        template <typename U> bool operator==(U const&);
-
-        virtual void print_on(std::ostream&) const;
+        void print_on(std::ostream&) const;
         
+        template <typename U> bool operator==(U const&);
+                                                           
       protected:
         
         T                       object_;
@@ -94,6 +93,8 @@ namespace hugh {
       // variables, exported (extern)
 
       // functions, inlined (inline)
+
+      template <typename T> std::ostream& operator<<(std::ostream&, handle<T> const&);
       
       // functions, exported (extern)
       
