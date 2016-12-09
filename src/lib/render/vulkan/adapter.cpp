@@ -110,7 +110,7 @@ namespace hugh {
       // functions, exported
 
       /* explicit */
-      adapter::adapter(vulkan::instance const& a, unsigned b)
+      adapter::adapter(vulkan::instance::base const& a, unsigned b)
         : field::container          (),
           handle<::VkPhysicalDevice>(),
           queue_family              (*this, "queue_family",

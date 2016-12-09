@@ -25,7 +25,7 @@
 
 #include <hugh/field/adapter/single.hpp>
 #include <hugh/field/container.hpp>
-#include <hugh/render/vulkan/instance.hpp>
+#include <hugh/render/vulkan/instance/base.hpp>
 
 namespace hugh {
 
@@ -53,7 +53,7 @@ namespace hugh {
 
         field::adapter::single<queue_family_t const> const queue_family; //< queue family
         
-        explicit adapter(vulkan::instance const&, unsigned = 0);
+        explicit adapter(vulkan::instance::base const&, unsigned = 0);
         virtual ~adapter();
 
         virtual void print_on(std::ostream&) const;

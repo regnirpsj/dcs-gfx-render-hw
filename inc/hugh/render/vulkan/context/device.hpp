@@ -43,7 +43,7 @@ namespace hugh {
 
           using adapter_type       = boost::intrusive_ptr<vulkan::adapter const>;
           using device_handle_type = vulkan::handle<::VkDevice>;
-          using instance_type      = boost::intrusive_ptr<vulkan::instance const>;
+          using instance_type      = boost::intrusive_ptr<vulkan::instance::base const>;
           using queue_handle_type  = vulkan::handle<::VkQueue>;
 
           field::adapter::single<instance_type> const      instance; //< instance
@@ -51,7 +51,7 @@ namespace hugh {
           field::adapter::single<device_handle_type> const logical;  //< device
           field::adapter::single<queue_handle_type> const  queue;    //< device queue
           
-          explicit device(vulkan::instance* = nullptr);
+          explicit device(vulkan::instance::base* = nullptr);
           virtual ~device();
           
         private:

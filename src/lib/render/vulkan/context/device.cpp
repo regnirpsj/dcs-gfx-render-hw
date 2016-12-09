@@ -23,7 +23,7 @@
 
 // includes, project
 
-#include <hugh/render/vulkan/io.hpp>
+#include <hugh/render/vulkan/instance/visual.hpp>
 #include <hugh/support/io_utils.hpp>
 
 #define HUGH_USE_TRACE
@@ -56,6 +56,8 @@ namespace {
   queue_family_indices
   find_queue_families(::VkPhysicalDevice device)
   {
+    TRACE("hugh::render::vulkan::context::device::<unnamed>::find_queue_families");
+
     queue_family_indices indices;
     unsigned             count(0);
     
@@ -81,7 +83,7 @@ namespace {
 
     return indices;
   }
-  
+
 } // namespace {
 
 namespace hugh {
@@ -97,7 +99,7 @@ namespace hugh {
         // functions, exported
 
         /* explicit */
-        device::device(vulkan::instance* a)
+        device::device(vulkan::instance::base* a)
           : render::context::device(),
             instance               (*this, "instance",
                                     std::bind(&device::cb_get_instance, this),
@@ -115,7 +117,7 @@ namespace hugh {
                                     std::bind(&device::cb_get_queue,  this),
                                     std::bind(&device::cb_set_queue,  this,
                                               std::placeholders::_1)),
-            instance_              ((nullptr != a) ? a : new vulkan::instance),
+            instance_              ((nullptr != a) ? a : new vulkan::instance::visual),
             physical_              (new adapter(*instance_)),
             logical_               (::vkDestroyDevice),
             queue_                 ()
@@ -153,7 +155,7 @@ namespace hugh {
             std::runtime_error(ostr.str());
           }
 
-          ::vkGetDeviceQueue(*logical_, indices.graphics_family, 0, &queue_);
+          ::vkGetDeviceQueue(*logical_, physical_->queue_family->index.graphics, 0, &queue_);
         }
         
         /* virtual */

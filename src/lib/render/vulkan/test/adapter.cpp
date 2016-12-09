@@ -19,6 +19,7 @@
 // includes, project
 
 #include <hugh/render/vulkan/adapter.hpp>
+#include <hugh/render/vulkan/instance.hpp>
 
 #define HUGH_USE_TRACE
 #undef HUGH_USE_TRACE
@@ -38,31 +39,40 @@ namespace {
 
 #define BOOST_TEST_MAIN
 #include <boost/test/unit_test.hpp>
+#include <boost/test/output_test_stream.hpp>
 
 BOOST_AUTO_TEST_CASE(test_hugh_render_vulkan_test_adapter_ctor_dflt)
 {
   using namespace hugh::render::vulkan;
 
-  instance                 i;
+  instance::visual         i;
   std::unique_ptr<adapter> a(new adapter(i));
   
-  BOOST_CHECK       (nullptr != a);
-  //BOOST_TEST_MESSAGE(*a);
-  a->print_on(std::cout);
+  BOOST_CHECK(nullptr != a);
+
+  boost::test_tools::output_test_stream output;
+
+  a->print_on(output);
+  
+  BOOST_TEST_MESSAGE(output.str());
 }
 
 BOOST_AUTO_TEST_CASE(test_hugh_render_vulkan_test_adapter_ctor_user)
 {
   using namespace hugh::render::vulkan;
-  using string_list_type = instance::string_list_type;
+  using string_list_type = instance::visual::string_list_type;
 
   string_list_type const l;
   string_list_type const e({ VK_KHR_SURFACE_EXTENSION_NAME });
-  instance               i(l, e);
+  instance::visual       i(l, e);
   
   std::unique_ptr<adapter> a(new adapter(i, 1));
   
-  BOOST_CHECK       (nullptr != a);
-  //BOOST_TEST_MESSAGE(*a);
-  a->print_on(std::cout);
+  BOOST_CHECK(nullptr != a);
+
+  boost::test_tools::output_test_stream output;
+
+  a->print_on(output);
+  
+  BOOST_TEST_MESSAGE(output.str());
 }
