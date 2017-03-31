@@ -118,6 +118,44 @@ namespace hugh {
         return get_handle(os, a, "VkPhysicalDevice");
       }
 
+      std::ostream& operator<<(std::ostream& os, ::VkPhysicalDeviceProperties const& a)
+      {
+        std::ostream::sentry const cerberus(os);
+        
+        if (cerberus) {
+          os << '['
+             << "api:"
+             << VK_VERSION_MAJOR(a.apiVersion) << '.'
+             << VK_VERSION_MINOR(a.apiVersion) << '.'
+             << VK_VERSION_PATCH(a.apiVersion) << ','
+             << "drv:" << a.driverVersion     << ','
+             << "vendor:" << std::hex << a.vendorID          << ','
+             << "devid:" << std::hex << a.deviceID          << ','
+             << a.deviceType        << ','
+             << a.deviceName        << ','
+             << "ppl$uuid:" << a.pipelineCacheUUID
+            // << a.limits
+            // << a.sparseProperties
+             << "]";
+        }
+        
+        return os;
+      }
+      
+      std::ostream&
+      operator<<(std::ostream& os, ::VkPhysicalDeviceType const& a)
+      {
+        static std::array<std::pair<::VkPhysicalDeviceType, std::string const>, 5> const types = {
+          std::make_pair(VK_PHYSICAL_DEVICE_TYPE_OTHER,          "OTHER"),
+          std::make_pair(VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU, "IGPU"),
+          std::make_pair(VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU,   "DGPU"),
+          std::make_pair(VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU,    "VGPU"),
+          std::make_pair(VK_PHYSICAL_DEVICE_TYPE_CPU,            "CPU"),
+        };
+        
+        return os << support::ostream::enumerate(a, types);
+      }
+      
       std::ostream&
       operator<<(std::ostream& os, ::VkQueue const& a)
       {
