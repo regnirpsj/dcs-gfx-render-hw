@@ -81,7 +81,7 @@ namespace hugh {
 
       template <typename T>
       /* virtual */ inline
-      handle<T>::~handle() noexcept (false)
+      handle<T>::~handle()
       {
         TRACE("hugh::render::vulkan::handle<" + support::demangle(typeid(T)) + ">::~handle");
         
@@ -155,20 +155,16 @@ namespace hugh {
       }
 
       template <typename T>
-      inline T
+      inline void
       handle<T>::reset(T const& a)
       {
         TRACE("hugh::render::vulkan::handle<" + support::demangle(typeid(T)) + ">::reset");
-
-        T const result(object_);
         
         if (a != object_) {
           cleanup();
           
           object_ = a;
         }
-
-        return result;
       }
       
       template <typename T>
@@ -177,11 +173,7 @@ namespace hugh {
       {
         TRACE("hugh::render::vulkan::handle<" + support::demangle(typeid(T)) + ">::operator=");
 
-        if (rhs != object_) {
-          cleanup();
-          
-          object_ = rhs;
-        }
+        reset(rhs);
       }
 
       template <typename T> template <typename U>

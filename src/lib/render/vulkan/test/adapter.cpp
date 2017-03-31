@@ -19,7 +19,7 @@
 // includes, project
 
 #include <hugh/render/vulkan/adapter.hpp>
-#include <hugh/render/vulkan/instance.hpp>
+#include <hugh/render/vulkan/instance/visual.hpp>
 
 #define HUGH_USE_TRACE
 #undef HUGH_USE_TRACE
@@ -46,7 +46,7 @@ BOOST_AUTO_TEST_CASE(test_hugh_render_vulkan_test_adapter_ctor_dflt)
   using namespace hugh::render::vulkan;
 
   instance::visual         i;
-  std::unique_ptr<adapter> a(new adapter(i));
+  std::unique_ptr<adapter> a(new adapter(i, 1));
   
   BOOST_CHECK(nullptr != a);
 

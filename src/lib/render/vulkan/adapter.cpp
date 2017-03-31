@@ -85,11 +85,15 @@ namespace {
     }
 
     if (0 > result) {
+      ::VkPhysicalDeviceProperties props;
+
+      ::vkGetPhysicalDeviceProperties(a, &props);
+      
       using hugh::render::vulkan::operator<<;
       
       std::ostringstream ostr;
 
-      ostr << "No matching queue family index found on " << a;
+      ostr << "No matching queue family index found on " << a << ' ' << props;
       
       throw std::runtime_error(ostr.str());
     }
@@ -184,6 +188,12 @@ namespace hugh {
         os << support::ostream::remove(1) << ',';
         
         handle<::VkPhysicalDevice>::print_on(os);
+
+        ::VkPhysicalDeviceProperties props;
+
+        ::vkGetPhysicalDeviceProperties(*this, &props);
+
+        os << ' ' << props;
       }
       
       adapter::queue_family_t const&

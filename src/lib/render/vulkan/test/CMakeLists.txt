@@ -19,6 +19,9 @@ list(APPEND SRC context_device.cpp)
 list(APPEND SRC context_swap.cpp)
 list(APPEND SRC handle.cpp)
 list(APPEND SRC instance.cpp)
+if(XCB_FOUND)
+  list(APPEND SRC window_xcb.cpp)
+endif()
 
 #add_definitions(-DHUGH_ALL_TRACE)
 

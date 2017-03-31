@@ -2,7 +2,7 @@
 
 /**************************************************************************************************/
 /*                                                                                                */
-/* Copyright (C) 2016 University of Hull                                                          */
+/* Copyright (C) 2016-2017 University of Hull                                                     */
 /*                                                                                                */
 /**************************************************************************************************/
 /*                                                                                                */
@@ -24,10 +24,12 @@
 
 #include <hugh/render/vulkan/adapter.hpp>
 #include <hugh/render/vulkan/allocator.hpp>
-#include <hugh/render/vulkan/context.hpp>
+#include <hugh/render/vulkan/contexts.hpp>
 #include <hugh/render/vulkan/handle.hpp>
-#include <hugh/render/vulkan/instance.hpp>
+#include <hugh/render/vulkan/instances.hpp>
 #include <hugh/render/vulkan/io.hpp>
+#include <hugh/render/vulkan/queue.hpp>
+#include <hugh/render/vulkan/windows.hpp>
 
 namespace hugh {
   

@@ -45,6 +45,10 @@ namespace hugh {
       HUGH_RENDER_VULKAN_EXPORT std::ostream& operator<<(std::ostream&,
                                                          ::VkInternalAllocationType const&);
       HUGH_RENDER_VULKAN_EXPORT std::ostream& operator<<(std::ostream&, ::VkPhysicalDevice const&);
+      HUGH_RENDER_VULKAN_EXPORT std::ostream& operator<<(std::ostream&,
+                                                         ::VkPhysicalDeviceProperties const&);
+      HUGH_RENDER_VULKAN_EXPORT std::ostream& operator<<(std::ostream&,
+                                                         ::VkPhysicalDeviceType const&);
       HUGH_RENDER_VULKAN_EXPORT std::ostream& operator<<(std::ostream&, ::VkQueue const&);
       HUGH_RENDER_VULKAN_EXPORT std::ostream& operator<<(std::ostream&,
                                                          ::VkQueueFamilyProperties const&);

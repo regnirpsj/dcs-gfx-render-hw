@@ -51,7 +51,7 @@ namespace hugh {
         explicit handle(                             delete_with_nothing);
         explicit handle(handle<::VkInstance> const&, delete_with_instance);
         explicit handle(handle<::VkDevice> const&,   delete_with_device);
-        virtual ~handle() noexcept (false);
+        virtual ~handle();
 
         /*
          * returns a pointer to 'object'
@@ -73,8 +73,10 @@ namespace hugh {
 
         operator bool () const;
 
-        T reset(T const&);
-        
+        /*
+         * reset/assign 'this' with 'rhs'
+         */
+        void reset(T const&);
         void operator=(T const&);
 
         void print_on(std::ostream&) const;
